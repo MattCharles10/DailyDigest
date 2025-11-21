@@ -71,30 +71,6 @@ A modern Android news app built with Jetpack Compose that delivers personalized 
 ├── Local Data (Room Database, ArticleDao)
 └── Remote Data (Retrofit, NewsApi)
 
-
-### MVVM Data Flow
-```mermaid
-graph TB
-    UI[Compose UI] --> VM[NewsViewModel]
-    VM --> Repo[NewsRepository]
-    Repo --> Local[Room Database]
-    Repo --> Remote[NewsAPI]
-    
-    subgraph "Data Layer"
-        Local --> Dao[ArticleDao]
-        Remote --> Api[RetrofitInstance]
-    end
-    
-    subgraph "Domain Layer"
-        Model[Article Model]
-    end
-    
-    style UI fill:#4F7DFF
-    style VM fill:#34C759
-    style Repo fill:#FF9500
-    style Local fill:#FF3B30
-    style Remote fill:#AF52DE
-
 📁 Project Structure
 
 app/src/main/java/com/example/dailydigest/

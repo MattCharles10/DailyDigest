@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -40,15 +41,19 @@ fun ArticleCard(
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            // Article Image
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            // Article Image - only if available
             if (!article.urlToImage.isNullOrEmpty()) {
                 AsyncImage(
                     model = article.urlToImage,
                     contentDescription = article.title,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .size(200.dp),
+                        .height(200.dp), // Use height instead of size
                     contentScale = ContentScale.Crop
                 )
             }
@@ -57,17 +62,19 @@ fun ArticleCard(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 8.dp),
+                    .padding(top = if (article.urlToImage != null) 8.dp else 0.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Top
             ) {
                 Column(
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 8.dp) // Add padding to separate from bookmark
                 ) {
                     Text(
                         text = article.title,
                         style = MaterialTheme.typography.titleMedium,
-                        maxLines = 2,
+                        maxLines = 3, // Increased from 2
                         overflow = TextOverflow.Ellipsis
                     )
 
@@ -82,7 +89,7 @@ fun ArticleCard(
                     }
 
                     Text(
-                        text = "${article.source} • ${article.publishedAt?.take(10) ?: ""}",
+                        text = "${article.source} • ${article.publishedAt}",
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(top = 8.dp)
@@ -91,15 +98,12 @@ fun ArticleCard(
 
                 // Bookmark Button
                 IconButton(
-                    onClick = { onBookmarkClick(article) }
+                    onClick = { onBookmarkClick(article) },
+                    modifier = Modifier.align(Alignment.Top)
                 ) {
                     Icon(
-                        imageVector = if (article.isSaved) {
-                            Icons.Default.Bookmark
-                        } else {
-                            Icons.Default.BookmarkBorder
-                        },
-                        contentDescription = if (article.isSaved) "Remove from saved" else "Save article",
+                        imageVector = if (article.isSaved) Icons.Default.Bookmark else Icons.Default.BookmarkBorder,
+                        contentDescription = if (article.isSaved) "Remove bookmark" else "Save article",
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }

@@ -21,7 +21,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.dailydigest.presentation.components.ArticleCard
 import com.example.dailydigest.presentation.components.CategoryChip
-import com.example.dailydigest.presentation.components.SearchBar
 import com.example.dailydigest.viewmodel.NewsViewModel
 
 @Composable
@@ -32,7 +31,6 @@ fun NewsFeedScreen(
     val articles by viewModel.articles.collectAsState()
     val selectedCategory by viewModel.selectedCategory.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
-    val searchQuery by viewModel.searchQuery.collectAsState() // Add this line
 
     Scaffold { paddingValues ->
         Column(
@@ -40,29 +38,23 @@ fun NewsFeedScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            // Search Bar - Add this section
-            SearchBar(
-                query = searchQuery, // This should work now
-                onQueryChange = { viewModel.onSearchQueryChange(it) },
-                onSearch = { viewModel.performSearch() }
-            )
-
-            // Categories Row
+            // Categories Row - Fixed scrolling
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .verticalScroll(rememberScrollState())
-                    .padding(8.dp)
+                    .verticalScroll(rememberScrollState()) // Add horizontal scroll for categories
             ) {
                 Text(
                     text = "Categories",
                     style = androidx.compose.material3.MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(start = 8.dp, bottom = 8.dp)
+                    modifier = Modifier.padding(16.dp, 8.dp, 16.dp, 8.dp)
                 )
 
                 androidx.compose.foundation.layout.Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     listOf("general", "technology", "sports", "business", "entertainment", "health").forEach { category ->
                         CategoryChip(
@@ -74,28 +66,42 @@ fun NewsFeedScreen(
                 }
             }
 
-            // News List
+            // News List - Fixed LazyColumn
             if (isLoading) {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
-            } else if (articles.isEmpty()) {
-                Text(
-                    text = "No articles found",
+                CircularProgressIndicator(
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
                         .padding(16.dp)
                 )
+            } else if (articles.isEmpty()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .weight(1f), // Important for proper sizing
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "No articles found",
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
             } else {
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                        .weight(1f), // Crucial for scroll to work
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    contentPadding = androidx.compose.foundation.layout.PaddingValues(16.dp)
                 ) {
-                    items(articles) { article ->
+                    items(
+                        items = articles,
+                        key = { article -> article.id ?: article.url } // Add key for better performance
+                    ) { article ->
                         ArticleCard(
                             article = article,
                             onArticleClick = { url ->
-                                // TODO: Open article in browser or detail screen
+                                // TODO: Open article in browser
                             },
                             onBookmarkClick = { articleToSave ->
                                 viewModel.toggleSaveArticle(articleToSave)

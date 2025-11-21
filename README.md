@@ -71,6 +71,11 @@ A modern Android news app built with Jetpack Compose that delivers personalized 
 ├── Local Data (Room Database, ArticleDao)
 └── Remote Data (Retrofit, NewsApi)
 
+## 📸 Screenshots
+<img width="362" height="783" alt="Screenshot 2025-11-21 173424" src="https://github.com/user-attachments/assets/dcc31ed9-cd21-43f4-b5db-1d0f950f5a6c" />
+<img width="379" height="794" alt="Screenshot 2025-11-21 173504" src="https://github.com/user-attachments/assets/f98cfaf3-8c27-46be-a8d8-197b5a98a892" />
+<img width="1919" height="1079" alt="Screenshot 2025-11-21 173342" src="https://github.com/user-attachments/assets/36e21ab9-c1b5-4084-b548-0e02d44094f0" />
+
 
 🚀 Getting Started
 Prerequisites

@@ -71,51 +71,6 @@ A modern Android news app built with Jetpack Compose that delivers personalized 
 ├── Local Data (Room Database, ArticleDao)
 └── Remote Data (Retrofit, NewsApi)
 
-📁 Project Structure
-
-app/src/main/java/com/example/dailydigest/
-├── 📂 data/
-│   ├── 📂 local/                   # Room Database
-│   │   ├── 📂 dao/
-│   │   │   └── ArticleDao.kt       # Database operations
-│   │   ├── 📂 entities/
-│   │   │   └── SavedArticleEntity.kt # Room entity
-│   │   └── AppDatabase.kt          # Database instance
-│   ├── 📂 remote/                  # Network Layer
-│   │   ├── 📂 api/
-│   │   │   ├── NewsApi.kt          # Retrofit interface
-│   │   │   └── RetrofitInstance.kt # Retrofit setup
-│   │   └── 📂 models/
-│   │       └── NewsResponse.kt     # API response models
-│   └── 📂 repository/
-│       ├── NewsRepository.kt       # Repository interface
-│       └── NewsRepositoryImpl.kt   # Repository implementation
-├── 📂 domain/                      # Business Layer
-│   ├── 📂 model/
-│   │   └── Article.kt              # Business model
-│   └── 📂 repository/
-│       └── NewsRepository.kt       # Interface
-├── 📂 presentation/                # UI Layer
-│   ├── 📂 screens/
-│   │   ├── NewsFeedScreen.kt       # Main news feed
-│   │   └── SavedArticlesScreen.kt  # Saved articles
-│   ├── 📂 components/
-│   │   ├── ArticleCard.kt          # News article card
-│   │   ├── CategoryChip.kt         # Category filter chip
-│   │   └── SearchBar.kt            # Search functionality
-│   ├── 📂 navigation/
-│   │   ├── NavGraph.kt             # Navigation setup
-│   │   └── BottomNavigationBar.kt  # Bottom nav
-│   └── 📂 theme/
-│       ├── Color.kt                # Color definitions
-│       ├── Theme.kt                # App theme
-│       └── Type.kt                 # Typography
-├── 📂 di/                          # Dependency Injection
-│   └── AppModule.kt                # Hilt modules
-├── 📂 viewmodel/                   # Presentation Logic
-│   └── NewsViewModel.kt            # Main ViewModel
-├── HiltApplication.kt              # Hilt app class
-└── MainActivity.kt                 # App entry point
 
 🚀 Getting Started
 Prerequisites

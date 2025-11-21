@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">DailyDigest</string>
+
+
+        <string name="news_feed">News Feed</string>
+        <string name="saved_articles">Saved Articles</string>
+        <string name="no_articles_found">No articles found</string>
+        <string name="no_saved_articles">No saved articles yet</string>
+        <string name="categories">Categories</string>
+        <string name="search">Search</string>
+
+</resources>

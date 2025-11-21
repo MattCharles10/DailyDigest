@@ -10,6 +10,8 @@
 
 A modern Android news app built with Jetpack Compose that delivers personalized news feeds with offline reading capabilities using real NewsAPI integration.
 
+**Developer**: Mathew Charles
+
 ## ✨ Features
 
 - 📱 **Modern UI** - Built with Jetpack Compose and Material Design 3
@@ -54,3 +56,337 @@ A modern Android news app built with Jetpack Compose that delivers personalized 
 ## 🏗 Architecture
 
 ### Clean Architecture Layers
+📱 Presentation Layer (UI)
+├── Screens (NewsFeedScreen, SavedArticlesScreen)
+├── Components (ArticleCard, CategoryChip, SearchBar)
+├── Navigation (NavGraph, BottomNavigationBar)
+└── ViewModels (NewsViewModel)
+
+📍 Domain Layer (Business Logic)
+├── Models (Article)
+└── Repository Interfaces (NewsRepository)
+
+💾 Data Layer (Data Sources)
+├── Repository Implementation (NewsRepositoryImpl)
+├── Local Data (Room Database, ArticleDao)
+└── Remote Data (Retrofit, NewsApi)
+
+
+### MVVM Data Flow
+```mermaid
+graph TB
+    UI[Compose UI] --> VM[NewsViewModel]
+    VM --> Repo[NewsRepository]
+    Repo --> Local[Room Database]
+    Repo --> Remote[NewsAPI]
+    
+    subgraph "Data Layer"
+        Local --> Dao[ArticleDao]
+        Remote --> Api[RetrofitInstance]
+    end
+    
+    subgraph "Domain Layer"
+        Model[Article Model]
+    end
+    
+    style UI fill:#4F7DFF
+    style VM fill:#34C759
+    style Repo fill:#FF9500
+    style Local fill:#FF3B30
+    style Remote fill:#AF52DE
+
+📁 Project Structure
+
+app/src/main/java/com/example/dailydigest/
+├── 📂 data/
+│   ├── 📂 local/                   # Room Database
+│   │   ├── 📂 dao/
+│   │   │   └── ArticleDao.kt       # Database operations
+│   │   ├── 📂 entities/
+│   │   │   └── SavedArticleEntity.kt # Room entity
+│   │   └── AppDatabase.kt          # Database instance
+│   ├── 📂 remote/                  # Network Layer
+│   │   ├── 📂 api/
+│   │   │   ├── NewsApi.kt          # Retrofit interface
+│   │   │   └── RetrofitInstance.kt # Retrofit setup
+│   │   └── 📂 models/
+│   │       └── NewsResponse.kt     # API response models
+│   └── 📂 repository/
+│       ├── NewsRepository.kt       # Repository interface
+│       └── NewsRepositoryImpl.kt   # Repository implementation
+├── 📂 domain/                      # Business Layer
+│   ├── 📂 model/
+│   │   └── Article.kt              # Business model
+│   └── 📂 repository/
+│       └── NewsRepository.kt       # Interface
+├── 📂 presentation/                # UI Layer
+│   ├── 📂 screens/
+│   │   ├── NewsFeedScreen.kt       # Main news feed
+│   │   └── SavedArticlesScreen.kt  # Saved articles
+│   ├── 📂 components/
+│   │   ├── ArticleCard.kt          # News article card
+│   │   ├── CategoryChip.kt         # Category filter chip
+│   │   └── SearchBar.kt            # Search functionality
+│   ├── 📂 navigation/
+│   │   ├── NavGraph.kt             # Navigation setup
+│   │   └── BottomNavigationBar.kt  # Bottom nav
+│   └── 📂 theme/
+│       ├── Color.kt                # Color definitions
+│       ├── Theme.kt                # App theme
+│       └── Type.kt                 # Typography
+├── 📂 di/                          # Dependency Injection
+│   └── AppModule.kt                # Hilt modules
+├── 📂 viewmodel/                   # Presentation Logic
+│   └── NewsViewModel.kt            # Main ViewModel
+├── HiltApplication.kt              # Hilt app class
+└── MainActivity.kt                 # App entry point
+
+🚀 Getting Started
+Prerequisites
+Android Studio Hedgehog or later
+
+Android SDK 34
+
+Kotlin 1.9.21
+
+NewsAPI key (free from newsapi.org)
+
+Installation & Setup
+Clone the repository
+
+bash
+git clone https://github.com/yourusername/daily-digest.git
+cd daily-digest
+Get Free API Key
+
+Register at newsapi.org
+
+Verify your email and get your free API key
+
+Free tier: 100 requests/day
+
+Configure API Key
+
+Open data/remote/api/NewsApi.kt
+
+Replace YOUR_API_KEY_HERE with your actual API key in both functions:
+
+kotlin
+@Query("apiKey") apiKey: String = "your_actual_api_key_here"
+Build and Run
+
+bash
+./gradlew assembleDebug
+or use Android Studio:
+
+Open project in Android Studio
+
+Build → Make Project
+
+Run → Run 'app'
+
+Gradle Configuration
+The project uses modern Gradle configuration:
+
+Project-level build.gradle.kts:
+
+kotlin
+plugins {
+    id("com.android.application") version "8.2.2" apply false
+    id("org.jetbrains.kotlin.android") version "1.9.21" apply false
+    id("com.google.dagger.hilt.android") version "2.48.1" apply false
+}
+App-level build.gradle.kts includes all necessary dependencies for:
+
+Compose UI
+
+Room database
+
+Retrofit networking
+
+Hilt dependency injection
+
+Coil image loading
+
+🎯 Key Implementation Details
+Data Models
+Domain Model (Article.kt):
+
+kotlin
+data class Article(
+    val id: String? = null,
+    val title: String,
+    val description: String,
+    val url: String,
+    val urlToImage: String? = null,
+    val publishedAt: String,
+    val source: String,
+    val category: String = "General",
+    val isSaved: Boolean = false
+)
+Repository Pattern
+Repository Interface:
+
+kotlin
+interface NewsRepository {
+    suspend fun getTopHeadlines(category: String? = null): List<Article>
+    fun getSavedArticles(): Flow<List<Article>>
+    suspend fun saveArticle(article: Article)
+    suspend fun deleteArticle(articleId: String)
+}
+Repository Implementation handles:
+
+API calls with error handling
+
+Local database operations
+
+Fallback sample data
+
+Data transformation between layers
+
+ViewModel with State Management
+NewsViewModel uses StateFlow for reactive UI:
+
+kotlin
+class NewsViewModel @Inject constructor(
+    private val repository: NewsRepository
+) : ViewModel() {
+    private val _articles = MutableStateFlow<List<Article>>(emptyList())
+    val articles: StateFlow<List<Article>> = _articles.asStateFlow()
+    
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+    
+    // State management methods...
+}
+Compose UI Components
+ArticleCard - Displays news articles with:
+
+Coil image loading
+
+Bookmark functionality
+
+Click handling
+
+Responsive layout
+
+CategoryChip - Filter chips for:
+
+General, Technology, Sports, Business, Entertainment, Health
+
+Navigation Setup
+BottomNavigationBar with two destinations:
+
+News Feed (news_feed route)
+
+Saved Articles (saved_articles route)
+
+🔧 Configuration
+AndroidManifest Permissions
+xml
+<uses-permission android:name="android.permission.INTERNET" />
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+Room Database Configuration
+Database name: daily_digest_db
+
+Version: 1
+
+Entity: SavedArticleEntity
+
+DAO: ArticleDao
+
+Supported Android Versions
+Minimum SDK: 21 (Android 5.0)
+
+Target SDK: 34 (Android 14)
+
+Compile SDK: 34
+
+🎨 UI/UX Features
+Dark/Light theme support through Material Design 3
+
+Smooth animations and transitions
+
+Responsive layout for various screen sizes
+
+Pull-to-refresh functionality
+
+Offline-first approach with Room caching
+
+🔄 Data Flow
+User opens app → ViewModel initializes and loads headlines
+
+Select category → API call with category filter
+
+Save article → Room database insertion
+
+Search → Local filtering of loaded articles
+
+Offline mode → Fallback to sample data if API fails
+
+🐛 Troubleshooting
+Common Issues
+API Key Not Working
+
+Ensure you've replaced YOUR_API_KEY_HERE in NewsApi.kt
+
+Verify your NewsAPI account is activated
+
+App Not Building
+
+Clean project: Build → Clean Project
+
+Rebuild project: Build → Rebuild Project
+
+Check Kotlin and Compose version compatibility
+
+No Articles Loading
+
+Check internet connection
+
+Verify API key is valid
+
+App will show sample data if API fails
+
+🤝 Contributing
+We welcome contributions! Please see our Contributing Guide for details.
+
+Fork the repository
+
+Create a feature branch: git checkout -b feature/amazing-feature
+
+Commit changes: git commit -m 'Add amazing feature'
+
+Push to branch: git push origin feature/amazing-feature
+
+Open a Pull Request
+
+📄 License
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+🙏 Acknowledgments
+
+NewsAPI for providing free news data
+
+Android Developers for excellent documentation
+
+Jetpack Compose team for the modern UI toolkit
+
+Kotlin team for the expressive language
+
+📞 Support
+
+If you have any questions or issues:
+
+Check Troubleshooting section
+
+Open an issue
+
+Provide details about your environment and error logs
+
+<div align="center">
+Built with ❤️ using Kotlin, Jetpack Compose, and Modern Android Architecture
+
+Star ⭐ the repo if you find this project helpful!
+
+</div> ```
